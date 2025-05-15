@@ -103,3 +103,18 @@ def admin():
 
 if __name__ == '__main__':
     app.run(debug=True)
+@app.route('/simulador', methods=['GET', 'POST'])
+@login_required
+def simulador():
+    resultado = None
+    if request.method == 'POST':
+        numero = int(request.form['numero'])
+        valor = float(request.form['valor'])
+        # Simulação básica: ganha se o número for igual ao sorteado (aleatório)
+        import random
+        sorteado = random.randint(0, 36)
+        if numero == sorteado:
+            resultado = f'Você ganhou! Número sorteado: {sorteado}. Ganho: R${valor * 35:.2f}'
+        else:
+            resultado = f'Você perdeu. Número sorteado: {sorteado}. Perda: R${valor:.2f}'
+    return render_template('simulador.html', resultado=resultado)
