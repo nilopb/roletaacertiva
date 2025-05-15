@@ -19,3 +19,25 @@ def gerar_palpites():
     mais_frequentes = [num for num, count in freq.most_common(5)]
 
     return mais_frequentes
+import sqlite3
+from collections import Counter
+
+DATABASE = 'database.db'
+
+def gerar_palpites():
+    conn = sqlite3.connect(DATABASE)
+    cur = conn.cursor()
+    # Supondo que você tenha uma tabela 'resultados' com coluna 'numero' para últimos resultados da roleta
+    cur.execute("SELECT numero FROM resultados ORDER BY id DESC LIMIT 100")
+    resultados = [row[0] for row in cur.fetchall()]
+    conn.close()
+
+    if not resultados:
+        # Se não tiver resultados, retorna palpites fixos (exemplo)
+        return [0, 1, 2, 3, 4]
+
+    # Contar frequências dos números
+    contagem = Counter(resultados)
+    # Pegar os 5 números mais frequentes
+    mais_comuns = [num for num, freq in contagem.most_common(5)]
+    return mais_comuns
